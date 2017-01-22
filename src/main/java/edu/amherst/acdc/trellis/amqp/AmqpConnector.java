@@ -15,6 +15,7 @@
  */
 package edu.amherst.acdc.trellis.amqp;
 
+import static edu.amherst.acdc.trellis.spi.EventService.serialize;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
@@ -48,6 +49,8 @@ public class AmqpConnector implements EventService {
 
     @Override
     public void emit(final Event event) {
-
+        serialize(event).ifPresent(evt -> {
+            // send event...
+        });
     }
 }
