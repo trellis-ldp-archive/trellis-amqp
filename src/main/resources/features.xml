@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="trellis-amqp-${project.version}">
+
+  <repository>mvn:edu.amherst.acdc/trellis-spi/${trellisSpiVersion}/xml/features</repository>
+
+  <feature name="trellis-amqp" version="${project.version}">
+    <details>Installs the Trellis AMQP service bundle</details>
+
+    <feature>trellis-spi</feature>
+
+    <bundle>mvn:edu.amherst.acdc/trellis-amql/${project.version}</bundle>
+  </feature>
+</features>
