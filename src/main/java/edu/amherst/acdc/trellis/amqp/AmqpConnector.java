@@ -15,6 +15,12 @@
  */
 package edu.amherst.acdc.trellis.amqp;
 
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 import edu.amherst.acdc.trellis.spi.Event;
 import edu.amherst.acdc.trellis.spi.EventService;
 
@@ -22,6 +28,23 @@ import edu.amherst.acdc.trellis.spi.EventService;
  * @author acoburn
  */
 public class AmqpConnector implements EventService {
+
+    private static final ConnectionFactory factory = new ConnectionFactory();
+
+    private final Connection conn;
+
+    private final Channel channel;
+
+    /**
+     * Create a new AMQP Connector
+     * @throws IOException when there is an error connecting to the AMQP broker
+     * @throws TimeoutException when the connection takes too long to establish itself
+     */
+    public AmqpConnector() throws IOException, TimeoutException {
+        //factor.setUri("amqp://username:password@host:port/vhost");
+        conn = factory.newConnection();
+        channel = conn.createChannel();
+    }
 
     @Override
     public void emit(final Event event) {
