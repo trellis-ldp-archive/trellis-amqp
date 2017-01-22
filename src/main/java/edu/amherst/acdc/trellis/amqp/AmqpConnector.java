@@ -45,6 +45,7 @@ public class AmqpConnector implements EventService {
      * @throws TimeoutException when the connection takes too long to establish itself
      */
     public AmqpConnector() throws IOException, TimeoutException {
+        // TODO -- make this configurable
         //factor.setUri("amqp://username:password@host:port/vhost");
         conn = factory.newConnection();
         channel = conn.createChannel();
@@ -55,5 +56,6 @@ public class AmqpConnector implements EventService {
         requireNonNull(event, "Cannot emit a null event!");
         final String message = serialize(event).orElseThrow(() ->
                 new RuntimeRepositoryException("Unable to serialize event!"));
+        // TODO -- send the message to the channel
     }
 }
