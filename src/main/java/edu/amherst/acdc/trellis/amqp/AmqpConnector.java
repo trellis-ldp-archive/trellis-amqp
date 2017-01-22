@@ -15,9 +15,16 @@
  */
 package edu.amherst.acdc.trellis.amqp;
 
+import edu.amherst.acdc.trellis.spi.Event;
+import edu.amherst.acdc.trellis.spi.EventService;
+
 /**
  * @author acoburn
  */
-public class AmqpConnector {
+public class AmqpConnector implements EventService {
 
+    @Override
+    public void emit(final Event event) {
+
+    }
 }

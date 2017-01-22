@@ -28,6 +28,7 @@ ext {
 
     /* Dependencies */
     trellisSpiVersion = '0.1.0-SNAPSHOT'
+    rabbitMqVersion = '4.0.2'
     slf4jVersion = '1.7.21'
 
     /* Testing */
@@ -45,6 +46,7 @@ configurations {
 
 dependencies {
     compile group: 'edu.amherst.acdc', name: 'trellis-spi', version: trellisSpiVersion
+    compile group: 'com.rabbitmq', name: 'amqp-client', version: rabbitMqVersion
     compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
 
     testCompile group: 'junit', name: 'junit', version: junitVersion
