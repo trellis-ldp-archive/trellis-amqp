@@ -16,7 +16,7 @@
 package edu.amherst.acdc.trellis.amqp;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.of;
+import static edu.amherst.acdc.trellis.spi.EventService.serialize;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -53,7 +53,7 @@ public class AmqpConnector implements EventService {
     @Override
     public void emit(final Event event) {
         requireNonNull(event, "Cannot emit a null event!");
-        final String message = of(event).flatMap(EventService::serialize).orElseThrow(() ->
+        final String message = serialize(event).orElseThrow(() ->
                 new RuntimeRepositoryException("Unable to serialize event!"));
     }
 }
