@@ -15,13 +15,16 @@
  */
 package edu.amherst.acdc.trellis.amqp;
 
-import static edu.amherst.acdc.trellis.spi.EventService.serialize;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.of;
+
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import edu.amherst.acdc.trellis.api.RuntimeRepositoryException;
 import edu.amherst.acdc.trellis.spi.Event;
 import edu.amherst.acdc.trellis.spi.EventService;
 
@@ -49,8 +52,8 @@ public class AmqpConnector implements EventService {
 
     @Override
     public void emit(final Event event) {
-        serialize(event).ifPresent(evt -> {
-            // send event...
-        });
+        requireNonNull(event, "Cannot emit a null event!");
+        final String message = of(event).flatMap(EventService::serialize).orElseThrow(() ->
+                new RuntimeRepositoryException("Unable to serialize event!"));
     }
 }
