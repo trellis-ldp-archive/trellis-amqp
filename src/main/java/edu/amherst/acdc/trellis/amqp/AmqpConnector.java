@@ -15,12 +15,14 @@
  */
 package edu.amherst.acdc.trellis.amqp;
 
+import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
 import static edu.amherst.acdc.trellis.spi.EventService.serialize;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -32,6 +34,11 @@ import edu.amherst.acdc.trellis.spi.EventService;
  * @author acoburn
  */
 public class AmqpConnector implements EventService {
+
+    // TODO -- make these configurable
+    private final String exchangeName = "trellis";
+    private final String queueName = "event";
+    private final Boolean durable = true;
 
     private static final ConnectionFactory factory = new ConnectionFactory();
 
@@ -47,15 +54,28 @@ public class AmqpConnector implements EventService {
     public AmqpConnector() throws IOException, TimeoutException {
         // TODO -- make this configurable
         //factor.setUri("amqp://username:password@host:port/vhost");
+
         conn = factory.newConnection();
         channel = conn.createChannel();
+        channel.exchangeDeclare(exchangeName, "direct", durable);
+        channel.queueDeclare(queueName, durable, false, false, emptyMap());
+        channel.queueBind(queueName, exchangeName, queueName);
     }
 
     @Override
     public void emit(final Event event) {
         requireNonNull(event, "Cannot emit a null event!");
+
+        final BasicProperties props = new BasicProperties().builder()
+                .contentType("application/ld+json").contentEncoding("UTF-8").build();
+
         final String message = serialize(event).orElseThrow(() ->
                 new RuntimeRepositoryException("Unable to serialize event!"));
-        // TODO -- send the message to the channel
+
+        try {
+            channel.basicPublish(exchangeName, queueName, true, false, props, message.getBytes());
+        } catch (final IOException ex) {
+            throw new RuntimeRepositoryException("Unable to emit event to broker", ex);
+        }
     }
 }
