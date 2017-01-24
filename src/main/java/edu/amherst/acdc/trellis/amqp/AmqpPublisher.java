@@ -15,8 +15,11 @@
  */
 package edu.amherst.acdc.trellis.amqp;
 
+import static java.lang.Boolean.parseBoolean;
+import static java.lang.System.getProperty;
 import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
+import static com.rabbitmq.client.BuiltinExchangeType.DIRECT;
 import static edu.amherst.acdc.trellis.spi.EventService.serialize;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -36,21 +39,26 @@ import edu.amherst.acdc.trellis.spi.EventService;
 import org.slf4j.Logger;
 
 /**
+ * An AMQP message producer capable of publishing messages to an AMQP broker such as
+ * RabbitMQ or Qpid.
+ *
  * @author acoburn
  */
 public class AmqpPublisher implements EventService {
 
     private static final Logger LOGGER = getLogger(AmqpPublisher.class);
 
-    // TODO -- make these configurable via system properties
-    private final Boolean durable = true;
-    private final Boolean exclusive = false;
-    private final Boolean autoDelete = false;
-    private final String exchangeType = "direct";
-    private final Boolean mandatory = true;
-    private final Boolean immediate = false;
-
     private static final ConnectionFactory factory = new ConnectionFactory();
+
+    private final Boolean durable;
+
+    private final Boolean exclusive;
+
+    private final Boolean autoDelete;
+
+    private final Boolean mandatory;
+
+    private final Boolean immediate;
 
     private final Connection conn;
 
@@ -70,7 +78,7 @@ public class AmqpPublisher implements EventService {
      */
     public AmqpPublisher() throws IOException, TimeoutException, URISyntaxException, NoSuchAlgorithmException,
            KeyManagementException {
-        this(System.getProperty("trellis.amqp.uri"), "trellis", "event");
+        this(getProperty("trellis.amqp.uri"), "trellis", "event");
     }
 
     /**
@@ -90,13 +98,19 @@ public class AmqpPublisher implements EventService {
         requireNonNull(exchangeName);
         requireNonNull(queueName);
 
-        factory.setUri(uri);
+        this.durable = parseBoolean(getProperty("trellis.amqp.durable", "true"));
+        this.exclusive = parseBoolean(getProperty("trellis.amqp.exclusive", "false"));
+        this.autoDelete = parseBoolean(getProperty("trellis.amqp.autoDelete", "false"));
+        this.mandatory = parseBoolean(getProperty("trellis.amqp.mandatory", "true"));
+        this.immediate = parseBoolean(getProperty("trellis.amqp.immediate", "false"));
         this.exchangeName = exchangeName;
         this.queueName = queueName;
 
+        factory.setUri(uri);
+
         conn = factory.newConnection();
         channel = conn.createChannel();
-        channel.exchangeDeclare(exchangeName, exchangeType, durable);
+        channel.exchangeDeclare(exchangeName, DIRECT, durable);
         channel.queueDeclare(queueName, durable, exclusive, autoDelete, emptyMap());
         channel.queueBind(queueName, exchangeName, queueName);
     }
