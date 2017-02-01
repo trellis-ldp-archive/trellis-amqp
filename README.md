@@ -1,6 +1,6 @@
 # trellis-amqp
 
-[![Build Status](https://travis-ci.org/acoburn/trellis-amqp.png?branch=master)](https://travis-ci.org/acoburn/trellis-amqp)
+[![Build Status](https://travis-ci.org/trellis-ldp/trellis-amqp.png?branch=master)](https://travis-ci.org/trellis-ldp/trellis-amqp)
 
 An AMQP-based messaging connector. This implements an event bridge to
 AMQP-based brokers, such as Qpid or RabbitMQ.
