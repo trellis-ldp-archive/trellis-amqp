@@ -33,9 +33,9 @@ import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-import edu.amherst.acdc.trellis.api.RuntimeRepositoryException;
 import edu.amherst.acdc.trellis.spi.Event;
 import edu.amherst.acdc.trellis.spi.EventService;
+import edu.amherst.acdc.trellis.spi.RuntimeRepositoryException;
 import org.slf4j.Logger;
 
 /**
