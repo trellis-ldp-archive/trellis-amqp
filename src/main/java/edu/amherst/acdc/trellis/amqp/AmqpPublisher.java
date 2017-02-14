@@ -24,7 +24,6 @@ import static edu.amherst.acdc.trellis.spi.EventService.serialize;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.security.KeyManagementException;
@@ -122,13 +121,12 @@ public class AmqpPublisher implements EventService {
         final BasicProperties props = new BasicProperties().builder()
                 .contentType("application/ld+json").contentEncoding("UTF-8").build();
 
-        final String message = serialize(event).orElseThrow(() ->
-                new UncheckedIOException(new IOException("Unable to serialize event!")));
-
-        try {
-            channel.basicPublish(exchangeName, queueName, mandatory, immediate, props, message.getBytes());
-        } catch (final IOException ex) {
-            LOGGER.error("Error writing to broker: " + ex.getMessage());
-        }
+        serialize(event).ifPresent(message -> {
+            try {
+                channel.basicPublish(exchangeName, queueName, mandatory, immediate, props, message.getBytes());
+            } catch (final IOException ex) {
+                LOGGER.error("Error writing to broker: " + ex.getMessage());
+            }
+        });
     }
 }
