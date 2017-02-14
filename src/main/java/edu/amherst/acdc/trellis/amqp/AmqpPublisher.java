@@ -24,6 +24,7 @@ import static edu.amherst.acdc.trellis.spi.EventService.serialize;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.security.KeyManagementException;
@@ -35,7 +36,6 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import edu.amherst.acdc.trellis.spi.Event;
 import edu.amherst.acdc.trellis.spi.EventService;
-import edu.amherst.acdc.trellis.spi.RuntimeRepositoryException;
 import org.slf4j.Logger;
 
 /**
@@ -123,7 +123,7 @@ public class AmqpPublisher implements EventService {
                 .contentType("application/ld+json").contentEncoding("UTF-8").build();
 
         final String message = serialize(event).orElseThrow(() ->
-                new RuntimeRepositoryException("Unable to serialize event!"));
+                new UncheckedIOException(new IOException("Unable to serialize event!")));
 
         try {
             channel.basicPublish(exchangeName, queueName, mandatory, immediate, props, message.getBytes());
