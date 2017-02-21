@@ -15,26 +15,28 @@
  */
 package edu.amherst.acdc.trellis.amqp;
 
-import static java.lang.Boolean.parseBoolean;
+import static com.rabbitmq.client.BuiltinExchangeType.DIRECT;
+import static edu.amherst.acdc.trellis.spi.EventService.serialize;
 import static java.lang.System.getProperty;
 import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
-import static com.rabbitmq.client.BuiltinExchangeType.DIRECT;
-import static edu.amherst.acdc.trellis.spi.EventService.serialize;
+import static java.util.Optional.ofNullable;
 import static org.slf4j.LoggerFactory.getLogger;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
-import java.security.KeyManagementException;
-import java.util.concurrent.TimeoutException;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+
 import edu.amherst.acdc.trellis.spi.Event;
 import edu.amherst.acdc.trellis.spi.EventService;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.TimeoutException;
+
 import org.slf4j.Logger;
 
 /**
@@ -48,12 +50,6 @@ public class AmqpPublisher implements EventService {
     private static final Logger LOGGER = getLogger(AmqpPublisher.class);
 
     private static final ConnectionFactory factory = new ConnectionFactory();
-
-    private final Boolean durable;
-
-    private final Boolean exclusive;
-
-    private final Boolean autoDelete;
 
     private final Boolean mandatory;
 
@@ -97,11 +93,13 @@ public class AmqpPublisher implements EventService {
         requireNonNull(exchangeName);
         requireNonNull(queueName);
 
-        this.durable = parseBoolean(getProperty("trellis.amqp.durable", "true"));
-        this.exclusive = parseBoolean(getProperty("trellis.amqp.exclusive", "false"));
-        this.autoDelete = parseBoolean(getProperty("trellis.amqp.autoDelete", "false"));
-        this.mandatory = parseBoolean(getProperty("trellis.amqp.mandatory", "true"));
-        this.immediate = parseBoolean(getProperty("trellis.amqp.immediate", "false"));
+        final Boolean durable = ofNullable(getProperty("trellis.amqp.durable")).map(Boolean::parseBoolean).orElse(true);
+        final Boolean exclusive = ofNullable(getProperty("trellis.amqp.exclusive")).map(Boolean::parseBoolean)
+            .orElse(false);
+        final Boolean autoDelete = ofNullable(getProperty("trellis.amqp.autoDelete")).map(Boolean::parseBoolean)
+            .orElse(false);
+        this.mandatory = ofNullable(getProperty("trellis.amqp.mandatory")).map(Boolean::parseBoolean).orElse(true);
+        this.immediate = ofNullable(getProperty("trellis.amqp.immediate")).map(Boolean::parseBoolean).orElse(false);
         this.exchangeName = exchangeName;
         this.queueName = queueName;
 
