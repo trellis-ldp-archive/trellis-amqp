@@ -32,6 +32,7 @@ import edu.amherst.acdc.trellis.spi.Event;
 import edu.amherst.acdc.trellis.spi.EventService;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -123,8 +124,19 @@ public class AmqpPublisher implements EventService {
             try {
                 channel.basicPublish(exchangeName, queueName, mandatory, immediate, props, message.getBytes());
             } catch (final IOException ex) {
-                LOGGER.error("Error writing to broker: " + ex.getMessage());
+                LOGGER.error("Error writing to broker: {}", ex.getMessage());
+                throw new UncheckedIOException(ex);
             }
         });
+    }
+
+    @Override
+    public void close() {
+        try {
+            conn.close();
+        } catch (final IOException ex) {
+            LOGGER.error("Error closing connection: {}", ex.getMessage());
+            throw new UncheckedIOException(ex);
+        }
     }
 }
