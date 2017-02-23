@@ -45,7 +45,7 @@ import org.slf4j.Logger;
  *
  * @author acoburn
  */
-public class AmqpPublisher implements EventService {
+public class AmqpPublisher implements EventService, AutoCloseable {
 
     private static final Logger LOGGER = getLogger(AmqpPublisher.class);
 
