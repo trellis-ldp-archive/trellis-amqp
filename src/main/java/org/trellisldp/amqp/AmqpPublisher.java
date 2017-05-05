@@ -1,6 +1,4 @@
 /*
- * Copyright Amherst College
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,10 +11,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package edu.amherst.acdc.trellis.amqp;
+package org.trellisldp.amqp;
 
 import static com.rabbitmq.client.BuiltinExchangeType.DIRECT;
-import static edu.amherst.acdc.trellis.spi.EventService.serialize;
+import static org.trellisldp.spi.EventService.serialize;
 import static java.lang.System.getProperty;
 import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
@@ -28,8 +26,8 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-import edu.amherst.acdc.trellis.spi.Event;
-import edu.amherst.acdc.trellis.spi.EventService;
+import org.trellisldp.spi.Event;
+import org.trellisldp.spi.EventService;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
