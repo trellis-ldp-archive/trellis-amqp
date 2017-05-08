@@ -14,20 +14,17 @@
 package org.trellisldp.amqp;
 
 import static com.rabbitmq.client.BuiltinExchangeType.DIRECT;
-import static org.trellisldp.spi.EventService.serialize;
 import static java.lang.System.getProperty;
 import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.trellisldp.spi.EventService.serialize;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-
-import org.trellisldp.spi.Event;
-import org.trellisldp.spi.EventService;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -36,6 +33,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
+import org.trellisldp.spi.Event;
+import org.trellisldp.spi.EventService;
 
 /**
  * An AMQP message producer capable of publishing messages to an AMQP broker such as
