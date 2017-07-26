@@ -13,9 +13,6 @@
  */
 package org.trellisldp.amqp;
 
-import static com.rabbitmq.client.BuiltinExchangeType.DIRECT;
-import static java.lang.System.getProperty;
-import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -23,14 +20,8 @@ import static org.trellisldp.spi.EventService.serialize;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.trellisldp.spi.Event;
@@ -42,17 +33,9 @@ import org.trellisldp.spi.EventService;
  *
  * @author acoburn
  */
-public class AmqpPublisher implements EventService, AutoCloseable {
+public class AmqpPublisher implements EventService {
 
     private static final Logger LOGGER = getLogger(AmqpPublisher.class);
-
-    private static final ConnectionFactory factory = new ConnectionFactory();
-
-    private final Boolean mandatory;
-
-    private final Boolean immediate;
-
-    private final Connection conn;
 
     private final Channel channel;
 
@@ -60,53 +43,39 @@ public class AmqpPublisher implements EventService, AutoCloseable {
 
     private final String queueName;
 
+    private final Boolean mandatory;
+
+    private final Boolean immediate;
+
     /**
-     * Create a new AMQP Publisher
-     * @throws IOException when there is an error connecting to the AMQP broker
-     * @throws TimeoutException when the connection takes too long to establish itself
-     * @throws URISyntaxException if the connection URI is malformed
-     * @throws NoSuchAlgorithmException if the provided algorithm doesn't exist
-     * @throws KeyManagementException if there was an error with the key management
+     * Create a an AMQP publisher
+     * @param channel the channel
+     * @param exchangeName the exchange name
+     * @param queueName the queue name
      */
-    public AmqpPublisher() throws IOException, TimeoutException, URISyntaxException, NoSuchAlgorithmException,
-           KeyManagementException {
-        this(getProperty("trellis.amqp.uri"), "trellis", "event");
+    public AmqpPublisher(final Channel channel, final String exchangeName, final String queueName) {
+        this(channel, exchangeName, queueName, null, null);
     }
 
     /**
-     * Create a new AMQP Publisher
-     * @param uri the connection URI
-     * @param exchangeName the name of the exchange
-     * @param queueName the name of the queue
-     * @throws IOException when there is an error connecting to the AMQP broker
-     * @throws TimeoutException when the connection takes too long to establish itself
-     * @throws URISyntaxException if the connection URI is malformed
-     * @throws NoSuchAlgorithmException if the provided algorithm doesn't exist
-     * @throws KeyManagementException if there was an error with the key management
+     * Create a an AMQP publisher
+     * @param channel the channel
+     * @param exchangeName the exchange name
+     * @param queueName the queue name
+     * @param mandatory the mandatory setting
+     * @param immediate the immediate setting
      */
-    public AmqpPublisher(final String uri, final String exchangeName, final String queueName)
-            throws IOException, TimeoutException, URISyntaxException, NoSuchAlgorithmException, KeyManagementException {
-        requireNonNull(uri);
+    public AmqpPublisher(final Channel channel, final String exchangeName, final String queueName,
+            final Boolean mandatory, final Boolean immediate) {
+        requireNonNull(channel);
         requireNonNull(exchangeName);
         requireNonNull(queueName);
 
-        final Boolean durable = ofNullable(getProperty("trellis.amqp.durable")).map(Boolean::parseBoolean).orElse(true);
-        final Boolean exclusive = ofNullable(getProperty("trellis.amqp.exclusive")).map(Boolean::parseBoolean)
-            .orElse(false);
-        final Boolean autoDelete = ofNullable(getProperty("trellis.amqp.autoDelete")).map(Boolean::parseBoolean)
-            .orElse(false);
-        this.mandatory = ofNullable(getProperty("trellis.amqp.mandatory")).map(Boolean::parseBoolean).orElse(true);
-        this.immediate = ofNullable(getProperty("trellis.amqp.immediate")).map(Boolean::parseBoolean).orElse(false);
+        this.channel = channel;
         this.exchangeName = exchangeName;
         this.queueName = queueName;
-
-        factory.setUri(uri);
-
-        conn = factory.newConnection();
-        channel = conn.createChannel();
-        channel.exchangeDeclare(exchangeName, DIRECT, durable);
-        channel.queueDeclare(queueName, durable, exclusive, autoDelete, emptyMap());
-        channel.queueBind(queueName, exchangeName, queueName);
+        this.mandatory = ofNullable(mandatory).orElse(true);
+        this.immediate = ofNullable(immediate).orElse(false);
     }
 
     @Override
@@ -123,10 +92,5 @@ public class AmqpPublisher implements EventService, AutoCloseable {
                 LOGGER.error("Error writing to broker: {}", ex.getMessage());
             }
         });
-    }
-
-    @Override
-    public void close() throws IOException {
-        conn.close();
     }
 }
