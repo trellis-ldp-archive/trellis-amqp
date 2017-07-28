@@ -234,6 +234,7 @@ task docs(type: Javadoc) {
     options {
         links "http://docs.oracle.com/javase/8/docs/api/"
         links "https://commons.apache.org/proper/commons-rdf/apidocs/"
+        links "http://www.rabbitmq.com/releases/rabbitmq-java-client/current-javadoc/"
         links "http://www.trellisldp.org/apidocs/"
     }
 }
