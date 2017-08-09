@@ -1,6 +1,7 @@
 # trellis-amqp
 
 [![Build Status](https://travis-ci.org/trellis-ldp/trellis-amqp.png?branch=master)](https://travis-ci.org/trellis-ldp/trellis-amqp)
+[![Build status](https://ci.appveyor.com/api/projects/status/q1cdl5g48fiyed26?svg=true)](https://ci.appveyor.com/project/acoburn/trellis-amqp)
 [![Coverage Status](https://coveralls.io/repos/github/trellis-ldp/trellis-amqp/badge.svg?branch=master)](https://coveralls.io/github/trellis-ldp/trellis-amqp?branch=master)
 
 
