@@ -23,6 +23,7 @@ group = 'org.trellisldp'
 description = 'Trellis AMQP Connector'
 
 ext {
+    moduleName = 'org.trellisldp.amqp'
     vendor = 'Trellis LDP'
     homepage = 'http://www.trellisldp.org'
     docURL = 'http://www.trellisldp.org/apidocs'
@@ -56,9 +57,10 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: junitVersion
     testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     testImplementation group: 'org.apache.commons', name: 'commons-rdf-simple', version: commonsRdfVersion
-    testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
 
-    buildToolsConfig 'org.trellisldp:trellis-build-tools:0.1.1'
+    testRuntimeClasspath group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
+
+    buildToolsConfig 'org.trellisldp:trellis-build-tools:0.2.0'
 }
 
 repositories {
@@ -95,9 +97,9 @@ jar {
         vendor project.vendor
         license project.license
 
-        instruction 'Automatic-Module-Name', 'org.trellisldp.amqp'
+        instruction 'Automatic-Module-Name', moduleName
         instruction 'Import-Package', '*'
-        instruction 'Export-Package', "org.trellisldp.amqp;version=${projectOsgiVersion}"
+        instruction 'Export-Package', "${moduleName};version=${projectOsgiVersion}"
     }
 }
 
@@ -224,6 +226,7 @@ task processBuildTools(type: Copy) {
 checkstyle {
     configFile = rootProject.file('build/checkstyle/checkstyle.xml')
     configProperties.checkstyleConfigDir = rootProject.file('build/checkstyle/')
+    toolVersion = '8.1'
 }
 
 sonarqube {
