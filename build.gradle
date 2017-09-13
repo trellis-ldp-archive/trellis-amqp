@@ -31,14 +31,15 @@ ext {
 
     /* Dependencies */
     trellisSpiVersion = '0.1.0-SNAPSHOT'
-    rabbitMqVersion = '4.2.0'
+    rabbitMqVersion = '4.2.1'
     slf4jVersion = '1.7.25'
 
     /* Testing */
     junitVersion = '4.12'
-    mockitoVersion = '2.9.0'
+    mockitoVersion = '2.10.0'
     commonsRdfVersion = '0.3.0-incubating'
     logbackVersion = '1.2.3'
+    jacocoVersion = "0.7.9"
 
     /* OSGi */
     projectOsgiVersion = project.version.replaceAll("-SNAPSHOT", ".SNAPSHOT")
@@ -123,7 +124,7 @@ artifacts {
 }
 
 jacoco {
-    toolVersion = "0.7.9"
+    toolVersion = jacocoVersion
 }
 
 license {
