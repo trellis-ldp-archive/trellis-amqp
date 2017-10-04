@@ -40,7 +40,7 @@ ext {
     commonsRdfVersion = '0.3.0-incubating'
     logbackVersion = '1.2.3'
     jacocoVersion = "0.7.9"
-    trellisEventVersion = '0.1.0-SNAPSHOT'
+    trellisEventVersion = '0.1.0'
 
     /* OSGi */
     projectOsgiVersion = project.version.replaceAll("-SNAPSHOT", ".SNAPSHOT")
