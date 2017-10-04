@@ -16,16 +16,17 @@ package org.trellisldp.amqp;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static org.slf4j.LoggerFactory.getLogger;
-import static org.trellisldp.spi.EventService.serialize;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 
 import java.io.IOException;
+import java.util.ServiceLoader;
 
 import org.slf4j.Logger;
-import org.trellisldp.spi.Event;
-import org.trellisldp.spi.EventService;
+import org.trellisldp.api.ActivityStreamService;
+import org.trellisldp.api.Event;
+import org.trellisldp.api.EventService;
 
 /**
  * An AMQP message producer capable of publishing messages to an AMQP broker such as
@@ -36,6 +37,9 @@ import org.trellisldp.spi.EventService;
 public class AmqpPublisher implements EventService {
 
     private static final Logger LOGGER = getLogger(AmqpPublisher.class);
+
+    // TODO - JDK9 ServiceLoader::findFirst
+    private static ActivityStreamService service = ServiceLoader.load(ActivityStreamService.class).iterator().next();
 
     private final Channel channel;
 
@@ -85,7 +89,7 @@ public class AmqpPublisher implements EventService {
         final BasicProperties props = new BasicProperties().builder()
                 .contentType("application/ld+json").contentEncoding("UTF-8").build();
 
-        serialize(event).ifPresent(message -> {
+        service.serialize(event).ifPresent(message -> {
             try {
                 channel.basicPublish(exchangeName, queueName, mandatory, immediate, props, message.getBytes());
             } catch (final IOException ex) {
