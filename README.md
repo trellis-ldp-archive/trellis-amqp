@@ -4,6 +4,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/q1cdl5g48fiyed26?svg=true)](https://ci.appveyor.com/project/acoburn/trellis-amqp)
 [![Coverage Status](https://coveralls.io/repos/github/trellis-ldp/trellis-amqp/badge.svg?branch=master)](https://coveralls.io/github/trellis-ldp/trellis-amqp?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.trellisldp/trellis-amqp/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.trellisldp/trellis-amqp/)
+[![Code Climate](https://codeclimate.com/github/trellis-ldp/trellis-amqp/badges/gpa.svg)](https://codeclimate.com/github/trellis-ldp/trellis-amqp)
 
 An AMQP-based messaging connector. This implements an event bridge to
 AMQP-based brokers, such as Qpid or RabbitMQ.
