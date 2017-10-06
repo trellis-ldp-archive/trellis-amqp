@@ -9,6 +9,9 @@
     <feature>trellis-api</feature>
 
     <bundle dependency="true">mvn:com.rabbitmq/amqp-client/${rabbitMqVersion}</bundle>
-    <bundle>mvn:edu.amherst.acdc/trellis-amqp/${project.version}</bundle>
+
+    <bundle dependency="true">mvn:org.apache.aries.spifly/org.apache.aries.spifly.dynamic.bundle/${spiflyVersion}</bundle>
+
+    <bundle>mvn:org.trellisldp/trellis-amqp/${project.version}</bundle>
   </feature>
 </features>
