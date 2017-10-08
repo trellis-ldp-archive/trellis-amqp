@@ -43,6 +43,7 @@ ext {
     trellisEventVersion = '0.1.0'
 
     /* OSGi */
+    trellisApiVersionRange = '[0.3,1)'
     spiflyVersion = '1.0.8'
     projectOsgiVersion = project.version.replaceAll("-SNAPSHOT", ".SNAPSHOT")
 }
