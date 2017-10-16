@@ -36,7 +36,7 @@ ext {
 
     /* Testing */
     junitVersion = '4.12'
-    mockitoVersion = '2.10.0'
+    mockitoVersion = '2.11.0'
     commonsRdfVersion = '0.3.0-incubating'
     logbackVersion = '1.2.3'
     jacocoVersion = "0.7.9"
