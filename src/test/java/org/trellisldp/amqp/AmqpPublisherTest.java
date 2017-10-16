@@ -23,6 +23,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
@@ -32,11 +33,11 @@ import java.io.IOException;
 import org.apache.commons.rdf.api.RDF;
 import org.apache.commons.rdf.simple.SimpleRDF;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import org.trellisldp.api.Event;
 import org.trellisldp.api.EventService;
@@ -47,7 +48,7 @@ import org.trellisldp.vocabulary.Trellis;
 /**
  * @author acoburn
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(JUnitPlatform.class)
 public class AmqpPublisherTest {
 
     private static final RDF rdf = new SimpleRDF();
@@ -62,8 +63,9 @@ public class AmqpPublisherTest {
     @Mock
     private Event mockEvent;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
+        initMocks(this);
         when(mockEvent.getTarget()).thenReturn(of(rdf.createIRI("trellis:repository/resource")));
         when(mockEvent.getAgents()).thenReturn(singleton(Trellis.RepositoryAdministrator));
         when(mockEvent.getIdentifier()).thenReturn(rdf.createIRI("urn:test"));
