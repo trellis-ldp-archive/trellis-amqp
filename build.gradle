@@ -30,22 +30,21 @@ ext {
     license = 'Apache 2'
 
     /* Dependencies */
-    trellisApiVersion = '0.4.0'
-    rabbitMqVersion = '5.0.0'
+    trellisVersion = '0.5.0'
+    rabbitMqVersion = '5.1.1'
     slf4jVersion = '1.7.25'
 
     /* Testing */
     junitVersion = '5.0.2'
     junitPlatformVersion = '1.0.2'
-    mockitoVersion = '2.12.0'
-    commonsRdfVersion = '0.3.0-incubating'
+    mockitoVersion = '2.13.0'
+    commonsRdfVersion = '0.5.0'
     logbackVersion = '1.2.3'
     jacocoVersion = "0.7.9"
-    trellisEventVersion = '0.1.0'
     apiguardianVersion = '1.0.0'
 
     /* OSGi */
-    trellisApiVersionRange = '[0.4,1)'
+    trellisVersionRange = '[0.5,1)'
     spiflyVersion = '1.0.8'
     projectOsgiVersion = project.version.replaceAll("-SNAPSHOT", ".SNAPSHOT")
 }
@@ -55,7 +54,7 @@ configurations {
 }
 
 dependencies {
-    api group: 'org.trellisldp', name: 'trellis-api', version: trellisApiVersion
+    api group: 'org.trellisldp', name: 'trellis-api', version: trellisVersion
     api group: 'com.rabbitmq', name: 'amqp-client', version: rabbitMqVersion
 
     implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
@@ -65,7 +64,7 @@ dependencies {
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitVersion
     testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     testImplementation group: 'org.apache.commons', name: 'commons-rdf-simple', version: commonsRdfVersion
-    testImplementation group: 'org.trellisldp', name: 'trellis-event-serialization', version: trellisEventVersion
+    testImplementation group: 'org.trellisldp', name: 'trellis-event-serialization', version: trellisVersion
 
     testRuntimeClasspath group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
 
@@ -186,7 +185,7 @@ uploadArchives {
             packaging 'jar'
             url 'http://www.trellisldp.org'
             inceptionYear '2017'
-            name 'Trellis Repository AMQP Messaging Connector'
+            name 'Trellis AMQP Messaging Connector'
             description 'An AMQP connector for a trellis repository'
 
             organization {
@@ -246,7 +245,7 @@ checkstyle {
 
 sonarqube {
     properties {
-        property "sonar.projectName", "Trellis Repository AMQP Connector"
+        property "sonar.projectName", "Trellis AMQP Connector"
         property "sonar.projectKey", "org.trellisldp:trellis-amqp"
         property "sonar.links.homepage", "https://github.com/trellis-ldp/trellis"
         property "sonar.links.issue", "https://github.com/trellis-ldp/trellis-amqp/issues"
@@ -260,9 +259,9 @@ task docs(type: Javadoc) {
     classpath = files(sourceSets.main.compileClasspath)
     destinationDir = new File(projectDir, "docs/${version}")
     options {
-        links "http://docs.oracle.com/javase/8/docs/api/"
+        links "https://docs.oracle.com/javase/8/docs/api/"
         links "https://commons.apache.org/proper/commons-rdf/apidocs/"
-        links "http://www.rabbitmq.com/releases/rabbitmq-java-client/current-javadoc/"
+        links "https://www.rabbitmq.com/releases/rabbitmq-java-client/current-javadoc/"
         links "https://trellis-ldp.github.io/trellis/apidocs/"
     }
 }

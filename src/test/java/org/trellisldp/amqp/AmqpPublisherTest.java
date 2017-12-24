@@ -13,6 +13,7 @@
  */
 package org.trellisldp.amqp;
 
+import static java.time.Instant.now;
 import static java.util.Collections.singleton;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -29,16 +30,15 @@ import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 
 import java.io.IOException;
+import java.time.Instant;
 
 import org.apache.commons.rdf.api.RDF;
 import org.apache.commons.rdf.simple.SimpleRDF;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-
 import org.trellisldp.api.Event;
 import org.trellisldp.api.EventService;
 import org.trellisldp.vocabulary.AS;
@@ -57,6 +57,8 @@ public class AmqpPublisherTest {
 
     private final String queueName = "queue";
 
+    private final Instant time = now();
+
     @Mock
     private Channel mockChannel;
 
@@ -67,7 +69,8 @@ public class AmqpPublisherTest {
     public void setUp() throws IOException {
         initMocks(this);
         when(mockEvent.getTarget()).thenReturn(of(rdf.createIRI("trellis:repository/resource")));
-        when(mockEvent.getAgents()).thenReturn(singleton(Trellis.RepositoryAdministrator));
+        when(mockEvent.getAgents()).thenReturn(singleton(Trellis.AdministratorAgent));
+        when(mockEvent.getCreated()).thenReturn(time);
         when(mockEvent.getIdentifier()).thenReturn(rdf.createIRI("urn:test"));
         when(mockEvent.getTypes()).thenReturn(singleton(AS.Update));
         when(mockEvent.getTargetTypes()).thenReturn(singleton(LDP.RDFSource));
